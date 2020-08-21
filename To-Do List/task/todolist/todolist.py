@@ -47,6 +47,7 @@ def add_task():
 
 
 def today_tasks():
+    rows = session.query(Table).all()
     if not rows:  # if rows is empty
         print(f"Today {datetime.today().day} {datetime.today().strftime('%b')}")  # e.g. Today Aug 17
         print("Nothing to do!")
@@ -95,7 +96,6 @@ def delete_task():
 
 if __name__ == "__main__":
     while True:
-        rows = session.query(Table).all()
         user_input = menu()
         if user_input == 1:
             today_tasks()
