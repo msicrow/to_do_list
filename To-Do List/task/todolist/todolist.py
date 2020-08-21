@@ -29,7 +29,9 @@ def menu():
     print("1) Today's tasks")
     print("2) Week's tasks")
     print("3) All tasks")
-    print("4) Add task")
+    print("4) Missed tasks")
+    print("5) Add task")
+    print("6) Delete task")
     print("0) Exit")
     return int(input())
 
@@ -72,6 +74,25 @@ def all_tasks():
         print(f"{num + 1}. {row.task}. {row.deadline.day} {row.deadline.strftime('%b')}")
 
 
+def missed_tasks():
+    missed_rows = session.query(Table).filter(Table.deadline < datetime.today().date()).all()
+    if len(missed_rows) == 0:
+        print("Nothing is missed!")
+    else:
+        for num, row in enumerate(missed_rows):
+            print(f"{num + 1}. {row.task}. {row.deadline.day} {row.deadline.strftime('%b')}")
+
+
+def delete_task():
+    all_tasks()
+    task_delete_num = int(input("Choose the number of the task you want to delete:\n"))
+    filter_rows = session.query(Table).order_by(Table.deadline).all()
+    specific_row = filter_rows[task_delete_num - 1]
+    session.delete(specific_row)
+    session.commit()
+    print("The task has been deleted!")
+
+
 if __name__ == "__main__":
     while True:
         rows = session.query(Table).all()
@@ -83,6 +104,10 @@ if __name__ == "__main__":
         elif user_input == 3:
             all_tasks()
         elif user_input == 4:
+            missed_tasks()
+        elif user_input == 5:
             add_task()
+        elif user_input == 6:
+            delete_task()
         else:
             break
